@@ -37,8 +37,8 @@ jobs:
       - name: Check Azure SQL DB connection
         run: |
           echo "Checking database connection..."
-          javac -cp ./libs/* TestDBConnection.java
-          java -cp .:./libs/* TestDBConnection
+          javac -cp "./libs/*" TestDBConnection.java
+          java -cp ".:./libs/*" TestDBConnection
         env:
           DB_URL: ${{ secrets.AZURE_SQL_JDBC_URL }}
           DB_USERNAME: ${{ secrets.AZURE_SQL_USERNAME }}
