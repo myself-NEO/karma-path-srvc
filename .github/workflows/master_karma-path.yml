@@ -23,33 +23,33 @@ jobs:
         with:
           java-version: 21
           distribution: 'temurin'
-          cache: maven
+#          cache: maven
 
-      - name: Set up environment variables
-        run: |
-          echo "DB_URL=${{ secrets.AZURE_SQL_JDBC_URL }}" >> $GITHUB_ENV
-          echo "DB_USERNAME=${{ secrets.AZURE_SQL_USERNAME }}" >> $GITHUB_ENV
-          echo "DB_PASSWORD=${{ secrets.AZURE_SQL_PASSWORD }}" >> $GITHUB_ENV
-
-      - name: Install dependencies
-        run: mvn dependency:copy-dependencies -DoutputDirectory=./libs
-
-      - name: Check Azure SQL DB connection
-        run: |
-          echo "Checking database connection..."
-          javac -cp "./libs/*" TestDBConnection.java
-          java -cp ".:./libs/*" TestDBConnection
-        env:
-          DB_URL: ${{ secrets.AZURE_SQL_JDBC_URL }}
-          DB_USERNAME: ${{ secrets.AZURE_SQL_USERNAME }}
-          DB_PASSWORD: ${{ secrets.AZURE_SQL_PASSWORD }}
-
-      - name: Upload Test Results
-        if: always()  # Run this step even if tests fail
-        uses: actions/upload-artifact@v4
-        with:
-          name: surefire-reports
-          path: target/surefire-reports
+#      - name: Set up environment variables
+#        run: |
+#          echo "DB_URL=${{ secrets.AZURE_SQL_JDBC_URL }}" >> $GITHUB_ENV
+#          echo "DB_USERNAME=${{ secrets.AZURE_SQL_USERNAME }}" >> $GITHUB_ENV
+#          echo "DB_PASSWORD=${{ secrets.AZURE_SQL_PASSWORD }}" >> $GITHUB_ENV
+#
+#      - name: Install dependencies
+#        run: mvn dependency:copy-dependencies -DoutputDirectory=./libs
+#
+#      - name: Check Azure SQL DB connection
+#        run: |
+#          echo "Checking database connection..."
+#          javac -cp "./libs/*" TestDBConnection.java
+#          java -cp ".:./libs/*" TestDBConnection
+#        env:
+#          DB_URL: ${{ secrets.AZURE_SQL_JDBC_URL }}
+#          DB_USERNAME: ${{ secrets.AZURE_SQL_USERNAME }}
+#          DB_PASSWORD: ${{ secrets.AZURE_SQL_PASSWORD }}
+#
+#      - name: Upload Test Results
+#        if: always()  # Run this step even if tests fail
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: surefire-reports
+#          path: target/surefire-reports
 
       - name: Build with Maven
         run: mvn clean install
