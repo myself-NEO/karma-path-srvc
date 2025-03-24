@@ -18,6 +18,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Java version
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'microsoft'
+          cache: maven
+
       - name: Run Tests
         run: mvn test
 
@@ -27,13 +34,6 @@ jobs:
         with:
           name: surefire-reports
           path: target/surefire-reports
-
-      - name: Set up Java version
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: 'microsoft'
-          cache: maven
 
       - name: Build with Maven
         run: mvn clean install
