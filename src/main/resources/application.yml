@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: karmapath
+
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://karma-path-server.database.windows.net:1433;
+      encrypt=true;
+      trustServerCertificate=false;
+      loginTimeout=30;
+      database=karmapath;
+    username: karma-path-server-admin@karma-path-server
+    password: ${SPRING_DATASOURCE_PASSWORD}  # Uncomment to use env variable
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  level:
+    root: info
