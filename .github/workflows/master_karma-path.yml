@@ -25,14 +25,22 @@ jobs:
           distribution: 'microsoft'
           cache: maven
 
-      - name: Run Tests
-        env:
-          AZURE_SQL_JDBC_URL: ${{ secrets.AZURE_SQL_JDBC_URL }}
-          AZURE_SQL_USERNAME: ${{ secrets.AZURE_SQL_USERNAME }}
-          AZURE_SQL_PASSWORD: ${{ secrets.AZURE_SQL_PASSWORD }}
+      - name: Set up environment variables
         run: |
+          echo "DB_URL=${{ secrets.AZURE_SQL_JDBC_URL }}" >> $GITHUB_ENV
+          echo "DB_USERNAME=${{ secrets.AZURE_SQL_USERNAME }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.AZURE_SQL_PASSWORD }}" >> $GITHUB_ENV
+
+      - name: Check Azure SQL DB connection
+        run: |
+          echo "Checking database connection..."
           java -cp .:/home/runner/work/karma-path-srvc/karma-path-srvc/target/*:/home/runner/work/karma-path-srvc/karma-path-srvc/target/lib/* com.microsoft.sqlserver.jdbc.SQLServerDriver
-          echo "Database connection successful"
+          if [ $? -eq 0 ]; then
+            echo "Database connection successful"
+          else
+            echo "Database connection failed"
+            exit 1
+          fi
 
       - name: Upload Test Results
         if: always()  # Run this step even if tests fail
