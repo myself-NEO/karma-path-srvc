@@ -31,16 +31,18 @@ jobs:
           echo "DB_USERNAME=${{ secrets.AZURE_SQL_USERNAME }}" >> $GITHUB_ENV
           echo "DB_PASSWORD=${{ secrets.AZURE_SQL_PASSWORD }}" >> $GITHUB_ENV
 
+      - name: Install dependencies
+        run: mvn dependency:copy-dependencies -DoutputDirectory=./libs
+
       - name: Check Azure SQL DB connection
         run: |
           echo "Checking database connection..."
-          java -cp .:/home/runner/work/karma-path-srvc/karma-path-srvc/target/*:/home/runner/work/karma-path-srvc/karma-path-srvc/target/lib/* com.microsoft.sqlserver.jdbc.SQLServerDriver
-          if [ $? -eq 0 ]; then
-            echo "Database connection successful"
-          else
-            echo "Database connection failed"
-            exit 1
-          fi
+          javac -cp ./libs/* TestDBConnection.java
+          java -cp .:./libs/* TestDBConnection
+        env:
+          DB_URL: ${{ secrets.AZURE_SQL_JDBC_URL }}
+          DB_USERNAME: ${{ secrets.AZURE_SQL_USERNAME }}
+          DB_PASSWORD: ${{ secrets.AZURE_SQL_PASSWORD }}
 
       - name: Upload Test Results
         if: always()  # Run this step even if tests fail
