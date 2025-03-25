@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read # This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
@@ -23,33 +23,13 @@ jobs:
         with:
           java-version: 21
           distribution: 'temurin'
-#          cache: maven
+      #          cache: maven
 
-#      - name: Set up environment variables
-#        run: |
-#          echo "DB_URL=${{ secrets.AZURE_SQL_JDBC_URL }}" >> $GITHUB_ENV
-#          echo "DB_USERNAME=${{ secrets.AZURE_SQL_USERNAME }}" >> $GITHUB_ENV
-#          echo "DB_PASSWORD=${{ secrets.AZURE_SQL_PASSWORD }}" >> $GITHUB_ENV
-#
-#      - name: Install dependencies
-#        run: mvn dependency:copy-dependencies -DoutputDirectory=./libs
-#
-#      - name: Check Azure SQL DB connection
-#        run: |
-#          echo "Checking database connection..."
-#          javac -cp "./libs/*" TestDBConnection.java
-#          java -cp ".:./libs/*" TestDBConnection
-#        env:
-#          DB_URL: ${{ secrets.AZURE_SQL_JDBC_URL }}
-#          DB_USERNAME: ${{ secrets.AZURE_SQL_USERNAME }}
-#          DB_PASSWORD: ${{ secrets.AZURE_SQL_PASSWORD }}
-#
-#      - name: Upload Test Results
-#        if: always()  # Run this step even if tests fail
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: surefire-reports
-#          path: target/surefire-reports
+      - name: Set up environment variables
+        run: |
+          echo "DB_URL=jdbc:sqlserver://<your-database-server>:1433;databaseName=<your-database-name>" >> $GITHUB_ENV
+          echo "DB_USERNAME=karma-path-server-admin" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
 
       - name: Build with Maven
         run: mvn clean install
@@ -66,13 +46,13 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-      
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: java-app
-      
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
